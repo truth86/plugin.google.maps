@@ -30,7 +30,7 @@
         marker.map = self.mapCtrl.map;
     }
     if ([json valueForKey:@"title"]) {
-        [marker setTitle: [json valueForKey:@"title"]];
+        //[marker setTitle: [json valueForKey:@"title"]];
     }
     if ([json valueForKey:@"snippet"]) {
         [marker setSnippet: [json valueForKey:@"snippet"]];
