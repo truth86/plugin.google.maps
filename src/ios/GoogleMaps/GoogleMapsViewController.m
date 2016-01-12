@@ -101,6 +101,7 @@ NSDictionary *initOptions;
         isEnabled = [[controls valueForKey:@"myLocationButton"] boolValue];
         self.map.settings.myLocationButton = isEnabled;
         self.map.myLocationEnabled = isEnabled;
+  
       }
       //indoorPicker
       if ([controls valueForKey:@"indoorPicker"] != nil) {
@@ -160,7 +161,48 @@ NSDictionary *initOptions;
     }
   
     [self.view addSubview: self.map];
+    
+    for (UIView *object in _map.subviews) {
+        if([[[object class] description] isEqualToString:@"GMSUISettingsView"] )
+        {
+            for(UIView *view in object.subviews) {
+                
+                NSLog(@"loc.... %@ ",[[view class] description] );
+                if([[[view class] description] isEqualToString:@"GMSx_QTMButton"] )  //add AR button
+                {
+                    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+                    [button setBackgroundColor:[UIColor whiteColor]];
+                    [button setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+                    [button setTitle:@"AR" forState:UIControlStateNormal];
+                    [button addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+                    
+                    //width and height should be same value
+                    button.frame = CGRectMake(5,5, view.frame.size.width, view.frame.size.width);
+                    button.clipsToBounds = YES;
+                    
+                    //half of the width
+                    button.layer.cornerRadius = 60/2.0f;
+                    button.layer.borderColor=[UIColor blackColor].CGColor;
+                    button.layer.borderWidth=0.0f;
+                   
+                    [object addSubview:button];
+                }
+            }
+        }
+    };
 }
+
+-(void) buttonClicked:(UIButton*)sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Augmented Relity"
+                                                    message:@"Please rotate your phone in landscape mode with home button to the LEFT for Augmented Relity mode."
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK, got it"
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
+
 
 
 - (void)didReceiveMemoryWarning
