@@ -1,22 +1,5 @@
 package plugin.google.maps;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import android.view.*;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.PluginEntry;
-import org.apache.cordova.PluginResult;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -43,8 +26,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.widget.AbsoluteLayout;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
@@ -92,6 +81,22 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.VisibleRegion;
 
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginEntry;
+import org.apache.cordova.PluginResult;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 @SuppressWarnings("deprecation")
 public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, OnMarkerClickListener,
       OnInfoWindowClickListener, OnMapClickListener, OnMapLongClickListener,
@@ -101,6 +106,9 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
   private final HashMap<String, PluginEntry> plugins = new HashMap<String, PluginEntry>();
   private float density;
   private HashMap<String, Bundle> bufferForLocationDialog = new HashMap<String, Bundle>();
+
+  Context context;
+  Activity act;
   
   private enum EVENTS {
     onScrollChanged
@@ -545,11 +553,70 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
     mapView = new MapView(activity, options);
     mapView.onCreate(null);
     mapView.onResume();
+
+    context=this.cordova.getActivity().getApplicationContext();
+    act =  this.cordova.getActivity();
+
+
+    Button btn = new Button(context);
+    btn.setBackgroundColor(Color.WHITE);
+    btn.setWidth(30);
+    btn.setText("AR");
+    btn.setTextColor(Color.parseColor("#ffa500"));
+
+
+    int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 45, act.getResources().getDisplayMetrics());
+    int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 42, act.getResources().getDisplayMetrics());
+
+    btn.setLayoutParams(new MapView.LayoutParams(width, height));
+
+    LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT);
+
+
+    // btn.setMargins(30, 20, 30, 0);
+
+    //btn.setLayoutParams(param);
+    btn.setGravity(Gravity.CENTER);
+    btn.setTextSize(20);
+
+
+    btn.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View view) {
+
+        try {
+
+          AlertDialog.Builder alertDialog = new AlertDialog.Builder(act);
+          alertDialog.setTitle("Augmented Reality");
+          alertDialog.setMessage("Please rotate your phone in landscape mode with home button to the RIGHT for Augmented Reality mode.");
+          alertDialog.setPositiveButton("OK, Got it!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              //do stuff
+            }
+          });
+          alertDialog.show();
+          //your write code
+
+        } catch (Exception e) {
+          Log.d("GoogleMaps", "------->error");
+
+        }
+      }
+    });
+
+
+    mapView.addView(btn);
+    //mapView.bringToFront();
+
+
     mapView.getMapAsync(new OnMapReadyCallback() {
       @Override
       public void onMapReady(GoogleMap googleMap) {
         
         map = googleMap;
+
+
         try {
           //controls
           if (params.has("controls")) {
@@ -1889,6 +1956,8 @@ public class GoogleMaps extends CordovaPlugin implements View.OnClickListener, O
 
       windowLayer.addView(textView2);
     }
+
+
 
     return windowLayer;
   }
