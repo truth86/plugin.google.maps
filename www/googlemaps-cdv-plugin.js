@@ -1,4 +1,4 @@
-/* global cordova, plugin, CSSPrimitiveValue */
+cordova.define("plugin.google.maps.phonegap-googlemaps-plugin", function(require, exports, module) { /* global cordova, plugin, CSSPrimitiveValue */
 var PLUGIN_NAME = 'GoogleMaps';
 var MARKERS = {};
 var KML_LAYERS = {};
@@ -343,7 +343,7 @@ App.prototype.getMap = function(div, params) {
         self.set("keepWatching", true);
         var className;
         while (div.parentNode) {
-            div.style.backgroundColor = 'rgba(0,0,0,0)';
+            div.style.backgroundColor = '#ffffff';
             className = div.className;
 
             // prevent multiple readding the class
@@ -850,7 +850,7 @@ App.prototype.setDiv = function(div) {
 
         var className;
         while (div.parentNode) {
-            div.style.backgroundColor = 'rgba(0,0,0,0)';
+            div.style.backgroundColor = '#ffffff';
             div.style.backgroundImage = '';
             className = div.className;
 
@@ -2763,3 +2763,5 @@ var HTML_COLORS = {
     "yellow": "#ffff00",
     "yellowgreen": "#9add32"
 };
+
+});
